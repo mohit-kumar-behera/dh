@@ -1,10 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
+@csrf_exempt
 def login_api_handler(request):
-    return HttpResponse('hj')
+    if request.POST:
+        print(request.POST)
+    return HttpResponse(False)
 
 
+@csrf_exempt
 def register_api_handler(request):
-    return HttpResponse('u')
+    if request.POST:
+        print(request.POST)
+    return HttpResponse(True)
