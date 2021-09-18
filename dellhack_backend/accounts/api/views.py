@@ -1,7 +1,10 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
+from accounts.api.utils import create_response_obj
 import json
+
+User = get_user_model()
 
 @csrf_exempt
 def login_api_handler(request):
@@ -14,6 +17,20 @@ def login_api_handler(request):
 @csrf_exempt
 def register_api_handler(request):
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        print(data)
-    return HttpResponse(True)
+        req_data = json.loads(request.body.decode('utf-8'))
+        email = req_data.get('email')
+        password = req_data.get('password')
+        try:
+            User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Continue with user creation
+            user = User.objects.create_user(email=email, password=password)
+            user.save()
+            status = 201
+            response_obj = create_response_obj(status, True, 'User created successfully')
+        else:
+            # User with this email already exists
+            status = 400
+            response_obj = create_response_obj(status, True, 'User with this email address already exists')
+
+    return HttpResponse(json.dumps(response_obj), status=status)
