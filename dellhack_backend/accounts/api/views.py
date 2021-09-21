@@ -26,8 +26,7 @@ def login_api_handler(request):
             else:
                 status = 404
                 response_obj = create_response_obj(status, False, 'email address or password is incorrect')
-
-    return HttpResponse(json.dumps(response_obj), status=status)
+        return HttpResponse(json.dumps(response_obj), status=status)
 
 
 @csrf_exempt
@@ -48,5 +47,4 @@ def register_api_handler(request):
             # User with this email already exists
             status = 400
             response_obj = create_response_obj(status, False, 'User with this email address already exists')
-
-    return HttpResponse(json.dumps(response_obj), status=status)
+        return HttpResponse(json.dumps(response_obj), status=status)
